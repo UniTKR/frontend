@@ -41,7 +41,9 @@ enum UniTTColor {
 
     enum State {
         static let success = Color(hex: 0x10B981)
+        static let successText = Color(hex: 0x047857)
         static let warning = Color(hex: 0xF59E0B)
+        static let warningText = Color(hex: 0xB45309)
         static let danger = Color(hex: 0xDC2626)
         static let neutral = Color(hex: 0x94A3B8)
     }

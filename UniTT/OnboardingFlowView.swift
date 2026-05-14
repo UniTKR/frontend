@@ -12,6 +12,11 @@ import UIKit
 
 struct OnboardingFlowView: View {
     @StateObject private var viewModel = OnboardingViewModel()
+    let onComplete: () -> Void
+
+    init(onComplete: @escaping () -> Void = {}) {
+        self.onComplete = onComplete
+    }
 
     var body: some View {
         NavigationStack {
@@ -29,9 +34,9 @@ struct OnboardingFlowView: View {
                 case .terms:
                     TermsAgreementScreen(viewModel: viewModel)
                 case .profile:
-                    ProfileSetupScreen(viewModel: viewModel)
+                    ProfileSetupScreen(viewModel: viewModel, onComplete: onComplete)
                 case .completed:
-                    OnboardingCompleteScreen()
+                    OnboardingCompleteScreen(onContinue: onComplete)
                 }
             }
         }
@@ -250,6 +255,7 @@ private struct TermsAgreementScreen: View {
 
 private struct ProfileSetupScreen: View {
     @ObservedObject var viewModel: OnboardingViewModel
+    let onComplete: () -> Void
     @State private var selectedPhoto: PhotosPickerItem?
     @State private var avatarImage: Image?
 
@@ -260,7 +266,10 @@ private struct ProfileSetupScreen: View {
             backAction: viewModel.goBack,
             ctaTitle: "시작하기",
             ctaEnabled: viewModel.canFinishProfile,
-            ctaAction: viewModel.continueFromCurrentStep
+            ctaAction: {
+                viewModel.continueFromCurrentStep()
+                onComplete()
+            }
         ) {
             StepIndicator(activeCount: OnboardingStep.profile.progressCount)
                 .padding(.bottom, UniTTSpacing.Stack.relaxed)
@@ -327,6 +336,8 @@ private struct ProfileSetupScreen: View {
 }
 
 private struct OnboardingCompleteScreen: View {
+    let onContinue: () -> Void
+
     var body: some View {
         VStack(spacing: UniTTSpacing.Stack.relaxed) {
             Image(systemName: "checkmark.circle.fill")
@@ -343,6 +354,12 @@ private struct OnboardingCompleteScreen: View {
                 .foregroundStyle(UniTTColor.Text.secondary)
                 .multilineTextAlignment(.center)
                 .lineSpacing(4)
+
+            Button("홈으로 가기", action: onContinue)
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .padding(.top, UniTTSpacing.Stack.snug)
+                .accessibilityIdentifier("go-home-button")
         }
         .padding(UniTTSpacing.Inset.loose)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -18,10 +18,14 @@ enum OnboardingStep: Int, CaseIterable {
 
     var progressCount: Int {
         switch self {
-        case .school: 1
-        case .email: 2
-        case .code: 3
-        case .terms, .profile, .completed: 4
+        case .school:
+            return 1
+        case .email:
+            return 2
+        case .code:
+            return 3
+        case .terms, .profile, .completed:
+            return 4
         }
     }
 
@@ -74,7 +78,7 @@ struct TermAgreement: Identifiable, Equatable {
     ]
 
     static var requiredIDs: [String] {
-        all.filter(\.required).map(\.id)
+        all.filter { $0.required }.map { $0.id }
     }
 }
 
@@ -120,7 +124,7 @@ final class OnboardingViewModel: ObservableObject {
     }
 
     var allTermsAccepted: Bool {
-        Set(TermAgreement.all.map(\.id)).isSubset(of: acceptedTermIDs)
+        Set(TermAgreement.all.map { $0.id }).isSubset(of: acceptedTermIDs)
     }
 
     var canContinueTerms: Bool {
@@ -204,7 +208,7 @@ final class OnboardingViewModel: ObservableObject {
 
     func setAllTermsAccepted(_ accepted: Bool) {
         if accepted {
-            acceptedTermIDs = Set(TermAgreement.all.map(\.id))
+            acceptedTermIDs = Set(TermAgreement.all.map { $0.id })
         } else {
             acceptedTermIDs = []
         }

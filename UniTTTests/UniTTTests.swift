@@ -65,4 +65,62 @@ struct UniTTTests {
         #expect(viewModel.isNicknameValid == false)
     }
 
+    @Test func searchFiltersListingsByKeyword() {
+        let viewModel = UserWireframeViewModel()
+
+        #expect(viewModel.searchResults.isEmpty)
+
+        viewModel.searchText = "에어팟"
+
+        #expect(viewModel.searchResults.count == 1)
+        #expect(viewModel.searchResults.first?.id == "airpods")
+    }
+
+    @Test func listingCreateRequiresEssentialFields() {
+        let viewModel = UserWireframeViewModel()
+
+        #expect(viewModel.canSubmitListing == true)
+
+        viewModel.createTitle = "   "
+        #expect(viewModel.canSubmitListing == false)
+
+        viewModel.createTitle = "자료구조 솔루션 매뉴얼 9판"
+        viewModel.createPickup = ""
+        #expect(viewModel.canSubmitListing == false)
+    }
+
+    @Test func reportRequiresReasonAndDetail() {
+        let viewModel = UserWireframeViewModel()
+
+        viewModel.reportStep = .reason
+        #expect(viewModel.canContinueReport == false)
+
+        viewModel.reportReason = "노쇼/약속 불이행"
+        #expect(viewModel.canContinueReport == true)
+
+        viewModel.reportStep = .detail
+        viewModel.reportDetail = "짧음"
+        #expect(viewModel.canContinueReport == false)
+    }
+
+    @Test func tradeStatusCanMoveToCompleted() {
+        let viewModel = UserWireframeViewModel()
+
+        #expect(viewModel.tradeStatus == .reserved)
+
+        viewModel.completeTrade()
+
+        #expect(viewModel.tradeStatus == .completed)
+    }
+
+    @Test func logoutDialogStateIsRequestedFromSettings() {
+        let viewModel = UserWireframeViewModel()
+
+        #expect(viewModel.showingLogoutDialog == false)
+
+        viewModel.requestLogout()
+
+        #expect(viewModel.showingLogoutDialog == true)
+    }
+
 }

@@ -8,8 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var completedOnboarding = false
+
     var body: some View {
-        OnboardingFlowView()
+        if completedOnboarding {
+            UserWireframeAppView()
+        } else {
+            OnboardingFlowView {
+                completedOnboarding = true
+            }
+        }
     }
 }
 
