@@ -23,12 +23,30 @@ final class UniTTUITests: XCTestCase {
     }
 
     @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
+    func testUserAWireframeOnboardingFlow() throws {
         let app = XCUIApplication()
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        XCTAssertTrue(app.otherElements["school-selection-screen"].waitForExistence(timeout: 5))
+
+        app.buttons["school-row-snu"].tap()
+        app.buttons["primary-cta"].tap()
+
+        XCTAssertTrue(app.otherElements["email-verification-screen"].waitForExistence(timeout: 2))
+        app.buttons["primary-cta"].tap()
+
+        XCTAssertTrue(app.otherElements["otp-code-screen"].waitForExistence(timeout: 2))
+        app.buttons["keypad-digit-1"].tap()
+        app.buttons["keypad-digit-2"].tap()
+        app.buttons["keypad-digit-3"].tap()
+
+        XCTAssertTrue(app.otherElements["terms-agreement-screen"].waitForExistence(timeout: 2))
+        app.buttons["primary-cta"].tap()
+
+        XCTAssertTrue(app.otherElements["profile-setup-screen"].waitForExistence(timeout: 2))
+        app.buttons["primary-cta"].tap()
+
+        XCTAssertTrue(app.otherElements["onboarding-complete-screen"].waitForExistence(timeout: 2))
     }
 
     @MainActor
