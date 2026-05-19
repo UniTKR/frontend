@@ -214,7 +214,7 @@ final class UserWireframeViewModel: ObservableObject {
 
     var visibleListings: [MockListing] {
         guard !showingEmptyFeed else { return [] }
-        listings.filter { listing in
+        return listings.filter { listing in
             selectedCategory == "전체" || listing.category == selectedCategory
         }
     }
@@ -230,7 +230,7 @@ final class UserWireframeViewModel: ObservableObject {
 
     var canSubmitListing: Bool {
         guard !showingCreateError else { return false }
-        !createCategory.isEmpty &&
+        return !createCategory.isEmpty &&
         !createTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !createPrice.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !createDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
