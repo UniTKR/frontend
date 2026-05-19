@@ -9,43 +9,76 @@ import SwiftUI
 
 enum UniTTColor {
     enum Brand {
-        static let primary = Color(hex: 0x4F46E5)
-        static let primaryHover = Color(hex: 0x4338CA)
-        static let primaryPressed = Color(hex: 0x3730A3)
-        static let primarySubtle = Color(hex: 0xEEF2FF)
-        static let border = Color(hex: 0xC7D2FE)
-        static let onPrimary = Color.white
+        static let primary = Color("brand.primary")
+        static let primaryHover = Color("brand.primaryHover")
+        static let primaryPressed = Color("brand.primaryPressed")
+        static let primarySubtle = Color("brand.primarySubtle")
+        static let border = Color("brand.border")
+        static let onPrimary = Color("brand.onPrimary")
     }
 
     enum Text {
-        static let primary = Color(hex: 0x0F172A)
-        static let secondary = Color(hex: 0x475569)
-        static let tertiary = Color(hex: 0x94A3B8)
-        static let disabled = Color(hex: 0xCBD5E1)
-        static let onBrand = Color.white
+        static let primary = Color("text.primary")
+        static let secondary = Color("text.secondary")
+        static let tertiary = Color("text.tertiary")
+        static let disabled = Color("text.disabled")
+        static let onBrand = Color("text.onBrand")
+        static let link = Color("text.link")
     }
 
     enum Background {
-        static let page = Color.white
-        static let surface = Color(hex: 0xF8FAFC)
-        static let elevated = Color.white
-        static let subtle = Color(hex: 0xF1F5F9)
+        static let page = Color("background.page")
+        static let surface = Color("background.surface")
+        static let elevated = Color("background.elevated")
+        static let subtle = Color("background.subtle")
+        static let canvas = Color("background.canvas")
     }
 
     enum Border {
-        static let subtle = Color(hex: 0xEEF2F6)
-        static let `default` = Color(hex: 0xE2E8F0)
-        static let strong = Color(hex: 0xCBD5E1)
-        static let focus = Brand.primary
+        static let subtle = Color("border.subtle")
+        static let `default` = Color("border.default")
+        static let strong = Color("border.strong")
+        static let focus = Color("border.focus")
     }
 
     enum State {
-        static let success = Color(hex: 0x10B981)
-        static let successText = Color(hex: 0x047857)
-        static let warning = Color(hex: 0xF59E0B)
-        static let warningText = Color(hex: 0xB45309)
-        static let danger = Color(hex: 0xDC2626)
-        static let neutral = Color(hex: 0x94A3B8)
+        static let success = Color("state.success")
+        static let successText = Color("state.successText")
+        static let successBg = Color("state.successBg")
+        static let warning = Color("state.warning")
+        static let warningText = Color("state.warningText")
+        static let warningBg = Color("state.warningBg")
+        static let danger = Color("state.danger")
+        static let dangerText = Color("state.dangerText")
+        static let dangerBg = Color("state.dangerBg")
+        static let neutral = Color("state.neutral")
+    }
+
+    enum Chip {
+        enum Listed {
+            static let bg = Color("chip.listed.bg")
+            static let ink = Color("chip.listed.ink")
+        }
+
+        enum Reserved {
+            static let bg = Color("chip.reserved.bg")
+            static let ink = Color("chip.reserved.ink")
+        }
+
+        enum Completed {
+            static let bg = Color("chip.completed.bg")
+            static let ink = Color("chip.completed.ink")
+        }
+
+        enum Canceled {
+            static let bg = Color("chip.canceled.bg")
+            static let ink = Color("chip.canceled.ink")
+        }
+
+        enum Disputed {
+            static let bg = Color("chip.disputed.bg")
+            static let ink = Color("chip.disputed.ink")
+        }
     }
 }
 
@@ -63,6 +96,8 @@ enum UniTTSpacing {
     static let x32: CGFloat = 32
     static let x40: CGFloat = 40
     static let x48: CGFloat = 48
+    static let x56: CGFloat = 56
+    static let x64: CGFloat = 64
 
     enum Inset {
         static let compact: CGFloat = UniTTSpacing.x8
@@ -106,6 +141,7 @@ enum UniTTSize {
     static let inputHeight: CGFloat = 40
     static let navbarHeight: CGFloat = 44
     static let ctaHeight: CGFloat = 48
+    static let tabbarHeight: CGFloat = 49
     static let avatarXL: CGFloat = 80
 }
 

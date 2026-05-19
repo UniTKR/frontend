@@ -1,0 +1,13 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="UniTT">
+  <defs>
+    <linearGradient id="brand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <path d="M 30 35 L 30 75 Q 30 97.5 50 97.5 Q 70 97.5 70 75 L 70 35"
+        fill="none" stroke="url(#brand)" stroke-width="15"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="30" cy="25" r="6.5" fill="url(#brand)"/>
+  <circle cx="70" cy="25" r="6.5" fill="url(#brand)"/>
+</svg>

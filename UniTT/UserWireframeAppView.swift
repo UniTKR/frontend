@@ -1227,6 +1227,8 @@ private struct StatusChip: View {
         case .listed: return UniTTColor.Brand.primarySubtle
         case .reserved: return UniTTColor.State.warning.opacity(0.14)
         case .completed: return UniTTColor.State.success.opacity(0.14)
+        case .canceled: return UniTTColor.Chip.Canceled.bg
+        case .disputed: return UniTTColor.Chip.Disputed.bg
         }
     }
 
@@ -1235,6 +1237,8 @@ private struct StatusChip: View {
         case .listed: return UniTTColor.Brand.primaryPressed
         case .reserved: return UniTTColor.State.warningText
         case .completed: return UniTTColor.State.successText
+        case .canceled: return UniTTColor.Chip.Canceled.ink
+        case .disputed: return UniTTColor.Chip.Disputed.ink
         }
     }
 }

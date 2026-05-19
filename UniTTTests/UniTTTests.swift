@@ -65,6 +65,36 @@ struct UniTTTests {
         #expect(viewModel.isNicknameValid == false)
     }
 
+    @Test func signupPasswordRequiresRulesAndMatch() {
+        let viewModel = OnboardingViewModel()
+
+        viewModel.password = "short"
+        viewModel.passwordConfirmation = "short"
+        #expect(viewModel.canContinuePassword == false)
+
+        viewModel.password = "Unit1234!"
+        viewModel.passwordConfirmation = "Unit1234?"
+        #expect(viewModel.canContinuePassword == false)
+
+        viewModel.passwordConfirmation = "Unit1234!"
+        #expect(viewModel.canContinuePassword == true)
+    }
+
+    @Test func authLoginAndPasswordResetValidation() {
+        let viewModel = AuthViewModel()
+
+        viewModel.loginEmail = "student.id@snu.ac.kr"
+        viewModel.loginPassword = "Unit1234!"
+        #expect(viewModel.canLogin == true)
+
+        viewModel.loginPassword = ""
+        #expect(viewModel.canLogin == false)
+
+        viewModel.newPassword = "Unit1234!"
+        viewModel.newPasswordConfirmation = "Unit1234!"
+        #expect(viewModel.canResetPassword == true)
+    }
+
     @Test func searchFiltersListingsByKeyword() {
         let viewModel = UserWireframeViewModel()
 
@@ -89,6 +119,17 @@ struct UniTTTests {
         #expect(viewModel.canSubmitListing == false)
     }
 
+    @Test func createCategoryBranchCanChange() {
+        let viewModel = UserWireframeViewModel()
+
+        #expect(viewModel.selectedCreateCategory == .textbook)
+
+        viewModel.selectCreateCategory(.electronics)
+
+        #expect(viewModel.createCategory == "전자기기")
+        #expect(viewModel.selectedCreateCategory == .electronics)
+    }
+
     @Test func reportRequiresReasonAndDetail() {
         let viewModel = UserWireframeViewModel()
 
@@ -111,6 +152,15 @@ struct UniTTTests {
         viewModel.completeTrade()
 
         #expect(viewModel.tradeStatus == .completed)
+    }
+
+    @Test func notificationTabFiltersNotifications() {
+        let viewModel = UserWireframeViewModel()
+
+        viewModel.notificationTab = .system
+
+        #expect(viewModel.visibleNotifications.count == 1)
+        #expect(viewModel.visibleNotifications.first?.kind == "시스템")
     }
 
     @Test func logoutDialogStateIsRequestedFromSettings() {

@@ -23,9 +23,12 @@ final class UniTTUITests: XCTestCase {
     }
 
     @MainActor
-    func testUserAWireframeOnboardingFlow() throws {
+    func testHiFiSignupOnboardingFlow() throws {
         let app = XCUIApplication()
         app.launch()
+
+        XCTAssertTrue(app.otherElements["login-screen"].waitForExistence(timeout: 5))
+        app.buttons["signup-button"].tap()
 
         XCTAssertTrue(app.otherElements["school-selection-screen"].waitForExistence(timeout: 5))
 
@@ -40,6 +43,9 @@ final class UniTTUITests: XCTestCase {
         app.buttons["keypad-digit-2"].tap()
         app.buttons["keypad-digit-3"].tap()
 
+        XCTAssertTrue(app.otherElements["password-setup-screen"].waitForExistence(timeout: 2))
+        app.buttons["primary-cta"].tap()
+
         XCTAssertTrue(app.otherElements["terms-agreement-screen"].waitForExistence(timeout: 2))
         app.buttons["primary-cta"].tap()
 
@@ -50,9 +56,27 @@ final class UniTTUITests: XCTestCase {
     }
 
     @MainActor
+    func testHiFiPasswordResetFlow() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        XCTAssertTrue(app.otherElements["login-screen"].waitForExistence(timeout: 5))
+        app.buttons["forgot-password-button"].tap()
+        XCTAssertTrue(app.otherElements["forgot-email-screen"].waitForExistence(timeout: 2))
+        app.buttons["forgot-email-next"].tap()
+        XCTAssertTrue(app.otherElements["forgot-code-screen"].waitForExistence(timeout: 2))
+        app.buttons["forgot-keypad-digit-1"].tap()
+        app.buttons["forgot-keypad-digit-2"].tap()
+        app.buttons["forgot-keypad-digit-3"].tap()
+        XCTAssertTrue(app.otherElements["reset-password-screen"].waitForExistence(timeout: 2))
+        app.buttons["reset-password-submit"].tap()
+        XCTAssertTrue(app.otherElements["login-screen"].waitForExistence(timeout: 2))
+    }
+
+    @MainActor
     func testHomeSearchAndProductDetailFlow() throws {
         let app = XCUIApplication()
-        launchPastOnboarding(app)
+        launchPastAuth(app)
 
         XCTAssertTrue(app.otherElements["user-home-screen"].waitForExistence(timeout: 3))
         app.buttons["category-textbook-button"].tap()
@@ -79,7 +103,7 @@ final class UniTTUITests: XCTestCase {
     @MainActor
     func testCreateChatSafetyAndSettingsFlows() throws {
         let app = XCUIApplication()
-        launchPastOnboarding(app)
+        launchPastAuth(app)
 
         app.buttons["tab-등록"].tap()
         XCTAssertTrue(app.otherElements["listing-create-screen"].waitForExistence(timeout: 2))
@@ -101,6 +125,7 @@ final class UniTTUITests: XCTestCase {
         app.buttons["tab-채팅"].tap()
         app.buttons["chat-row-chat-airpods"].tap()
         app.buttons["appointment-menu-button"].tap()
+        app.buttons["appointment-suggest-button"].tap()
         app.buttons["appointment-submit-button"].tap()
         XCTAssertTrue(app.otherElements["trade-panel-screen"].waitForExistence(timeout: 2))
         app.buttons["trade-complete-button"].tap()
@@ -115,20 +140,14 @@ final class UniTTUITests: XCTestCase {
     }
 
     @MainActor
-    private func launchPastOnboarding(_ app: XCUIApplication) {
+    private func launchPastAuth(_ app: XCUIApplication) {
         app.launch()
         if app.otherElements["user-home-screen"].waitForExistence(timeout: 1) {
             return
         }
 
-        app.buttons["school-row-snu"].tap()
-        app.buttons["primary-cta"].tap()
-        app.buttons["primary-cta"].tap()
-        app.buttons["keypad-digit-1"].tap()
-        app.buttons["keypad-digit-2"].tap()
-        app.buttons["keypad-digit-3"].tap()
-        app.buttons["primary-cta"].tap()
-        app.buttons["primary-cta"].tap()
+        XCTAssertTrue(app.otherElements["login-screen"].waitForExistence(timeout: 5))
+        app.buttons["login-button"].tap()
         XCTAssertTrue(app.otherElements["user-home-screen"].waitForExistence(timeout: 3))
     }
 

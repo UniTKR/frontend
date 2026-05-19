@@ -8,10 +8,18 @@
 import Combine
 import Foundation
 
+struct PasswordRule: Identifiable, Hashable {
+    let title: String
+    let satisfied: Bool
+
+    var id: String { title }
+}
+
 enum OnboardingStep: Int, CaseIterable {
     case school
     case email
     case code
+    case password
     case terms
     case profile
     case completed
@@ -24,8 +32,12 @@ enum OnboardingStep: Int, CaseIterable {
             return 2
         case .code:
             return 3
-        case .terms, .profile, .completed:
+        case .password:
             return 4
+        case .terms:
+            return 5
+        case .profile, .completed:
+            return 6
         }
     }
 
@@ -36,11 +48,13 @@ enum OnboardingStep: Int, CaseIterable {
         case .email:
             return "2 / 5"
         case .code:
-            return "3 / 5"
+            return "3 / 6"
+        case .password:
+            return "4 / 6"
         case .terms:
-            return "4 / 5"
+            return "5 / 6"
         case .profile:
-            return "5 / 5"
+            return "6 / 6"
         }
     }
 }
@@ -88,6 +102,8 @@ final class OnboardingViewModel: ObservableObject {
     @Published var selectedUniversity: University?
     @Published var emailLocalPart = "student.id"
     @Published var otpDigits = ["4", "2", "9", "", "", ""]
+    @Published var password = "Unit1234!"
+    @Published var passwordConfirmation = "Unit1234!"
     @Published var acceptedTermIDs: Set<String> = ["age", "service", "privacy", "location", "marketing"]
     @Published var presentedTerm: TermAgreement?
     @Published var nickname = "관악김학생"
@@ -121,6 +137,27 @@ final class OnboardingViewModel: ObservableObject {
 
     var canVerifyCode: Bool {
         otpCode.count == 6 && otpDigits.allSatisfy { $0.count == 1 }
+    }
+
+    var passwordRules: [PasswordRule] {
+        [
+            PasswordRule(title: "8자 이상", satisfied: password.count >= 8),
+            PasswordRule(title: "영문 포함", satisfied: password.rangeOfCharacter(from: .letters) != nil),
+            PasswordRule(title: "숫자 포함", satisfied: password.rangeOfCharacter(from: .decimalDigits) != nil),
+            PasswordRule(title: "특수문자 포함", satisfied: password.rangeOfCharacter(from: CharacterSet.alphanumerics.inverted) != nil)
+        ]
+    }
+
+    var isPasswordValid: Bool {
+        passwordRules.allSatisfy { $0.satisfied }
+    }
+
+    var doPasswordsMatch: Bool {
+        !passwordConfirmation.isEmpty && password == passwordConfirmation
+    }
+
+    var canContinuePassword: Bool {
+        isPasswordValid && doPasswordsMatch
     }
 
     var allTermsAccepted: Bool {
@@ -157,6 +194,8 @@ final class OnboardingViewModel: ObservableObject {
         case .code:
             step = .email
         case .terms:
+            step = .password
+        case .password:
             step = .code
         case .profile:
             step = .terms
@@ -172,6 +211,8 @@ final class OnboardingViewModel: ObservableObject {
         case .email where canSendVerificationEmail:
             step = .code
         case .code where canVerifyCode:
+            step = .password
+        case .password where canContinuePassword:
             step = .terms
         case .terms where canContinueTerms:
             step = .profile
@@ -189,7 +230,7 @@ final class OnboardingViewModel: ObservableObject {
         otpDigits[index] = digit
 
         if canVerifyCode {
-            step = .terms
+            step = .password
         }
     }
 

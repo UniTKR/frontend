@@ -31,6 +31,8 @@ struct OnboardingFlowView: View {
                     EmailVerificationScreen(viewModel: viewModel)
                 case .code:
                     OTPCodeScreen(viewModel: viewModel)
+                case .password:
+                    PasswordSetupScreen(viewModel: viewModel)
                 case .terms:
                     TermsAgreementScreen(viewModel: viewModel)
                 case .profile:
@@ -194,6 +196,60 @@ private struct OTPCodeScreen: View {
             )
         }
         .accessibilityIdentifier("otp-code-screen")
+    }
+}
+
+private struct PasswordSetupScreen: View {
+    @ObservedObject var viewModel: OnboardingViewModel
+    @State private var showsPassword = false
+    @State private var showsConfirmation = false
+
+    var body: some View {
+        OnboardingScreenScaffold(
+            title: "비밀번호 설정",
+            step: .password,
+            backAction: viewModel.goBack,
+            ctaTitle: "비밀번호 설정",
+            ctaEnabled: viewModel.canContinuePassword,
+            ctaAction: viewModel.continueFromCurrentStep
+        ) {
+            StepIndicator(activeCount: OnboardingStep.password.progressCount)
+                .padding(.bottom, UniTTSpacing.Stack.relaxed)
+
+            HeaderCopy(
+                title: "로그인에 사용할\n비밀번호를 만들어 주세요",
+                subtitle: "학교 이메일 인증 후에는 이 비밀번호로 다시 로그인할 수 있어요."
+            )
+
+            VStack(alignment: .leading, spacing: UniTTSpacing.Stack.normal) {
+                PasswordField(
+                    title: "비밀번호",
+                    text: $viewModel.password,
+                    showsText: $showsPassword,
+                    accessibilityID: "signup-password-field"
+                )
+
+                PasswordField(
+                    title: "비밀번호 확인",
+                    text: $viewModel.passwordConfirmation,
+                    showsText: $showsConfirmation,
+                    accessibilityID: "signup-password-confirmation-field"
+                )
+
+                VStack(alignment: .leading, spacing: UniTTSpacing.Stack.snug) {
+                    ForEach(viewModel.passwordRules, id: \.title) { rule in
+                        PasswordRuleRow(title: rule.title, satisfied: rule.satisfied)
+                    }
+
+                    PasswordRuleRow(title: "두 비밀번호 일치", satisfied: viewModel.doPasswordsMatch)
+                }
+                .padding(UniTTSpacing.Inset.cozy)
+                .background(UniTTColor.Background.surface)
+                .clipShape(RoundedRectangle(cornerRadius: UniTTRadius.lg, style: .continuous))
+            }
+            .padding(.top, UniTTSpacing.Stack.loose)
+        }
+        .accessibilityIdentifier("password-setup-screen")
     }
 }
 
@@ -490,13 +546,13 @@ private struct StepIndicator: View {
 
     var body: some View {
         HStack(spacing: UniTTSpacing.x6) {
-            ForEach(1...4, id: \.self) { index in
+            ForEach(1...6, id: \.self) { index in
                 Capsule()
                     .fill(index <= activeCount ? UniTTColor.Brand.primary : UniTTColor.Border.default)
                     .frame(height: 3)
             }
         }
-        .accessibilityLabel("진행 단계 \(activeCount) / 4")
+        .accessibilityLabel("진행 단계 \(activeCount) / 6")
     }
 }
 
@@ -651,6 +707,62 @@ private struct FieldLabel: View {
         Text(title)
             .font(UniTTTypography.labelSmall)
             .foregroundStyle(UniTTColor.Text.secondary)
+    }
+}
+
+private struct PasswordField: View {
+    let title: String
+    @Binding var text: String
+    @Binding var showsText: Bool
+    let accessibilityID: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: UniTTSpacing.Stack.tight) {
+            FieldLabel(title)
+
+            HStack(spacing: UniTTSpacing.Inline.snug) {
+                Group {
+                    if showsText {
+                        TextField(title, text: $text)
+                    } else {
+                        SecureField(title, text: $text)
+                    }
+                }
+                .font(UniTTTypography.bodyMedium)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .accessibilityIdentifier(accessibilityID)
+
+                Button {
+                    showsText.toggle()
+                } label: {
+                    Image(systemName: showsText ? "eye.slash" : "eye")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundStyle(UniTTColor.Text.secondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("\(accessibilityID)-visibility")
+            }
+            .inputChrome(focused: true)
+        }
+    }
+}
+
+private struct PasswordRuleRow: View {
+    let title: String
+    let satisfied: Bool
+
+    var body: some View {
+        HStack(spacing: UniTTSpacing.Inline.snug) {
+            Image(systemName: satisfied ? "checkmark.circle.fill" : "circle")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(satisfied ? UniTTColor.State.success : UniTTColor.Text.tertiary)
+                .accessibilityHidden(true)
+
+            Text(title)
+                .font(UniTTTypography.labelSmall)
+                .foregroundStyle(satisfied ? UniTTColor.State.successText : UniTTColor.Text.secondary)
+        }
     }
 }
 
@@ -1007,7 +1119,7 @@ private struct ProfilePreview: View {
     }
 }
 
-private extension View {
+extension View {
     func inputChrome(focused: Bool) -> some View {
         self
             .frame(minHeight: 48)
